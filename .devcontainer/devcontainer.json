@@ -1,0 +1,40 @@
+{
+  "name": "13F Tracker — Claude Code",
+  "image": "mcr.microsoft.com/devcontainers/python:3.11",
+
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "20"
+    }
+  },
+
+  "postCreateCommand": "npm install -g @anthropic/claude-code && pip install fastapi uvicorn httpx cachetools python-dotenv --break-system-packages",
+
+  "forwardPorts": [8000, 5173],
+
+  "portsAttributes": {
+    "8000": { "label": "FastAPI Backend", "onAutoForward": "notify" },
+    "5173": { "label": "React Frontend", "onAutoForward": "openBrowser" }
+  },
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "esbenp.prettier-vscode",
+        "bradlc.vscode-tailwindcss",
+        "ms-azuretools.vscode-docker"
+      ],
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "bash",
+        "editor.formatOnSave": true,
+        "python.defaultInterpreterPath": "/usr/local/bin/python"
+      }
+    }
+  },
+
+  "remoteEnv": {
+    "ANTHROPIC_API_KEY": "${localEnv:ANTHROPIC_API_KEY}"
+  }
+}
