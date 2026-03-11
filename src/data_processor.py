@@ -73,17 +73,16 @@ def compute_consensual_positions(
         fund_top_names[fund] = {h["name"] for h in _top_n(weighted, top_n)}
         fund_all_weights[fund] = {h["name"]: h["weight_pct"] for h in weighted}
 
-    # Contagem de aparições no top-N
+    # Contagem de aparições no top-N + peso médio entre os fundos que a têm no top-N
     count_in_top: dict[str, int] = defaultdict(int)
     all_weights: dict[str, list[float]] = defaultdict(list)
 
     for fund, top_names in fund_top_names.items():
         for name in top_names:
             count_in_top[name] += 1
-
-    for fund, weights in fund_all_weights.items():
-        for name, w in weights.items():
-            all_weights[name].append(w)
+            w = fund_all_weights[fund].get(name, 0.0)
+            if w > 0:
+                all_weights[name].append(w)
 
     # Média de pesos entre os fundos que a detêm
     def avg_weight(name: str) -> float:
@@ -103,11 +102,13 @@ def compute_consensual_positions(
     if prev_holdings:
         for fund, holdings in prev_holdings.items():
             weighted = _add_weights(holdings)
+            prev_fund_weights = {h["name"]: h["weight_pct"] for h in weighted}
             top_set = {h["name"] for h in _top_n(weighted, top_n)}
             for name in top_set:
                 prev_count_in_top[name] += 1
-            for h in weighted:
-                prev_all_weights[h["name"]].append(h["weight_pct"])
+                w = prev_fund_weights.get(name, 0.0)
+                if w > 0:
+                    prev_all_weights[name].append(w)
 
     rows = []
     for rank, (name, count) in enumerate(sorted_stocks, start=1):
