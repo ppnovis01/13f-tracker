@@ -167,8 +167,16 @@ with st.sidebar:
     st.markdown("**Gestoras**")
     col_all, col_none = st.columns(2)
 
+    _EXCLUDED_FROM_DEFAULT = {
+        "Alkeon Capital Management",
+        "Bridgewater Associates",
+        "Citadel Advisors",
+        "Point72 Asset Management",
+        "Renaissance Technologies",
+        "Two Sigma Investments",
+    }
     if "selected_funds" not in st.session_state:
-        st.session_state.selected_funds = list(FUNDS.keys())
+        st.session_state.selected_funds = [f for f in FUNDS.keys() if f not in _EXCLUDED_FROM_DEFAULT]
 
     if col_all.button("Todas", use_container_width=True):
         st.session_state.selected_funds = list(FUNDS.keys())

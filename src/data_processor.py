@@ -143,46 +143,50 @@ def compute_movers(
     curr_names: set[str] = set()
     prev_names: set[str] = set()
 
-    curr_stock_data: dict[str, dict] = defaultdict(lambda: {"funds": [], "value": 0})
-    prev_stock_data: dict[str, dict] = defaultdict(lambda: {"funds": [], "value": 0})
+    curr_stock_data: dict[str, dict] = defaultdict(lambda: {"funds": [], "weights": []})
+    prev_stock_data: dict[str, dict] = defaultdict(lambda: {"funds": [], "weights": []})
 
-    for fund, holdings in curr_holdings.items():
-        for h in holdings:
-            curr_names.add(h["name"])
-            curr_stock_data[h["name"]]["funds"].append(fund)
-            curr_stock_data[h["name"]]["value"] += h["value_usd"]
+    def _collect(all_h: dict[str, list[dict]], names: set, stock_data: dict) -> None:
+        """Agrega posições por ativo, consolidando entradas duplicadas de um mesmo fundo."""
+        for fund, holdings in all_h.items():
+            weighted = _add_weights(holdings)
+            # Soma peso e valor por ativo dentro deste fundo (elimina duplicatas de sub-contas)
+            fund_by_stock: dict[str, float] = defaultdict(float)
+            for h in weighted:
+                fund_by_stock[h["name"]] += h["weight_pct"]
+            for stock_name, w in fund_by_stock.items():
+                names.add(stock_name)
+                stock_data[stock_name]["funds"].append(fund)
+                stock_data[stock_name]["weights"].append(w)
 
-    for fund, holdings in prev_holdings.items():
-        for h in holdings:
-            prev_names.add(h["name"])
-            prev_stock_data[h["name"]]["funds"].append(fund)
-            prev_stock_data[h["name"]]["value"] += h["value_usd"]
+    _collect(curr_holdings, curr_names, curr_stock_data)
+    _collect(prev_holdings, prev_names, prev_stock_data)
+
+    def _avg_w(data: dict) -> float:
+        ws = data["weights"]
+        return sum(ws) / len(ws) if ws else 0.0
 
     # Novas posições
     new_rows = []
-    for name in sorted(curr_names - prev_names,
-                       key=lambda n: -curr_stock_data[n]["value"]):
+    for name in sorted(curr_names - prev_names, key=lambda n: -_avg_w(curr_stock_data[n])):
         d = curr_stock_data[name]
         funds_list = d["funds"]
-        val_m = d["value"] / 1e6
         new_rows.append({
             "EMPRESA": name,
             "Nº FUNDOS": len(funds_list),
-            "VALOR TOTAL": f"${val_m:,.0f}M",
+            "PESO MÉDIO": f"{_avg_w(d):.1f}%",
             "GESTORAS": ", ".join(funds_list[:4]) + ("..." if len(funds_list) > 4 else ""),
         })
 
     # Posições encerradas
     closed_rows = []
-    for name in sorted(prev_names - curr_names,
-                       key=lambda n: -prev_stock_data[n]["value"]):
+    for name in sorted(prev_names - curr_names, key=lambda n: -_avg_w(prev_stock_data[n])):
         d = prev_stock_data[name]
         funds_list = d["funds"]
-        val_m = d["value"] / 1e6
         closed_rows.append({
             "EMPRESA": name,
             "Nº FUNDOS": len(funds_list),
-            "VALOR TOTAL (T-1)": f"${val_m:,.0f}M",
+            "PESO MÉDIO (T-1)": f"{_avg_w(d):.1f}%",
             "GESTORAS": ", ".join(funds_list[:4]) + ("..." if len(funds_list) > 4 else ""),
         })
 
