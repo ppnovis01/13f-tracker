@@ -196,7 +196,17 @@ def get_portfolio_df(holdings: list[dict]) -> pd.DataFrame:
     if not holdings:
         return pd.DataFrame()
 
-    weighted = _add_weights(holdings)
+    # Consolidar posições duplicadas pelo mesmo ativo (mesmo CUSIP ou mesmo nome)
+    consolidated: dict[str, dict] = {}
+    for h in holdings:
+        key = h["cusip"] if h.get("cusip") else h["name"]
+        if key in consolidated:
+            consolidated[key]["value_usd"] += h["value_usd"]
+            consolidated[key]["shares"] = (consolidated[key].get("shares") or 0) + (h.get("shares") or 0)
+        else:
+            consolidated[key] = {**h}
+
+    weighted = _add_weights(list(consolidated.values()))
     weighted.sort(key=lambda x: -x["value_usd"])
 
     rows = []
