@@ -1,38 +1,32 @@
-# Lista de gestoras conhecidas com seus CIKs na SEC EDGAR
-# Para verificar/encontrar o CIK de uma gestora:
-#   https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&company=NOME&type=13F-HR
+# Lista de gestoras com seus CIKs verificados na SEC EDGAR
+# Para encontrar o CIK de qualquer gestora:
+#   https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&type=13F-HR
 
 FUNDS = {
-    # --- Gestoras confirmadas ---
-    "Berkshire Hathaway":           "1067983",
-    "Renaissance Technologies":     "1037389",
-    "Two Sigma Investments":        "1448814",
-    "Citadel Advisors":             "1423689",
-    "Coatue Management":            "1336528",
-    "Tiger Global Management":      "1362463",
-    "Lone Pine Capital":            "1154658",
-    "Viking Global Investors":      "1081270",
-    "Appaloosa Management":         "1100275",
-    "Baupost Group":                "1061219",
-    "Third Point LLC":              "1040570",
-    "Greenlight Capital":           "1079114",
-    "Pershing Square Capital":      "1336702",
-    "Point72 Asset Management":     "1603466",
-    "Bridgewater Associates":       "1350694",
-    # --- Gestoras adicionais ---
-    "Akre Capital Management":      "1112520",
-    "Altimeter Capital Management": "1441988",
-    "Atreides Management":          "1777223",
-    "Baillie Gifford":              "1090811",
-    "D1 Capital Partners":          "1741573",
-    "Dragoneer Investment Group":   "1559053",
-    "Duquesne Family Office":       "1536411",
-    "Durable Capital Partners":     "1783398",
-    "Elliott Management":           "1048268",
-    "Glenview Capital Management":  "1262463",
-    "Whale Rock Capital":           "1560327",
-    "Sequoia Fund":                 "858876",
-    "Maverick Capital":             "912093",
-    "Senator Investment Group":     "1589526",
-    "Alkeon Capital Management":    "1555280",
+    "Akre Capital Management":      "1112520",   # AKRE CAPITAL MANAGEMENT LLC
+    "Alkeon Capital Management":    "1230239",   # ALKEON CAPITAL MANAGEMENT LLC
+    "Altimeter Capital Management": "1541617",   # Altimeter Capital Management, LP
+    "Atreides Management":          "1777813",   # Atreides Management, LP
+    "Baillie Gifford":              "1088875",   # BAILLIE GIFFORD & CO
+    "Berkshire Hathaway":           "1067983",   # BERKSHIRE HATHAWAY INC
+    "Bridgewater Associates":       "1350694",   # Bridgewater Associates, LP
+    "Citadel Advisors":             "1423053",   # CITADEL ADVISORS LLC
+    "Coatue Management":            "1135730",   # COATUE MANAGEMENT LLC
+    "D1 Capital Partners":          "1747057",   # D1 Capital Partners L.P.
+    "Dragoneer Investment Group":   "1602189",   # Dragoneer Investment Group, LLC
+    "Duquesne Family Office":       "1536411",   # Duquesne Family Office LLC
+    "Durable Capital Partners":     "1798849",   # Durable Capital Partners LP
+    "Glenview Capital Management":  "1138995",   # GLENVIEW CAPITAL MANAGEMENT, LLC
+    "Greenlight Capital":           "1079114",   # GREENLIGHT CAPITAL INC
+    "Lone Pine Capital":            "1061165",   # LONE PINE CAPITAL LLC
+    "Maverick Capital":             "934639",    # MAVERICK CAPITAL LTD
+    "Pershing Square Capital":      "1336528",   # Pershing Square Capital Management, L.P.
+    "Point72 Asset Management":     "1603466",   # Point72 Asset Management, L.P.
+    "Renaissance Technologies":     "1037389",   # RENAISSANCE TECHNOLOGIES LLC
+    "Senator Investment Group":     "1443689",   # Senator Investment Group LP
+    "Third Point LLC":              "1040273",   # Third Point LLC
+    "Tiger Global Management":      "1167483",   # TIGER GLOBAL MANAGEMENT LLC
+    "Two Sigma Investments":        "1179392",   # TWO SIGMA INVESTMENTS, LP
+    "Viking Global Investors":      "1103804",   # VIKING GLOBAL INVESTORS LP
+    "Whale Rock Capital":           "1387322",   # Whale Rock Capital Management LLC
 }
