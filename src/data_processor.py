@@ -143,24 +143,24 @@ def compute_movers(
     curr_names: set[str] = set()
     prev_names: set[str] = set()
 
-    curr_stock_data: dict[str, dict] = defaultdict(lambda: {"funds": [], "value": 0, "weights": []})
-    prev_stock_data: dict[str, dict] = defaultdict(lambda: {"funds": [], "value": 0, "weights": []})
+    curr_stock_data: dict[str, dict] = defaultdict(lambda: {"funds": [], "weights": []})
+    prev_stock_data: dict[str, dict] = defaultdict(lambda: {"funds": [], "weights": []})
 
-    for fund, holdings in curr_holdings.items():
-        weighted = _add_weights(holdings)
-        for h in weighted:
-            curr_names.add(h["name"])
-            curr_stock_data[h["name"]]["funds"].append(fund)
-            curr_stock_data[h["name"]]["value"] += h["value_usd"]
-            curr_stock_data[h["name"]]["weights"].append(h["weight_pct"])
+    def _collect(all_h: dict[str, list[dict]], names: set, stock_data: dict) -> None:
+        """Agrega posições por ativo, consolidando entradas duplicadas de um mesmo fundo."""
+        for fund, holdings in all_h.items():
+            weighted = _add_weights(holdings)
+            # Soma peso e valor por ativo dentro deste fundo (elimina duplicatas de sub-contas)
+            fund_by_stock: dict[str, float] = defaultdict(float)
+            for h in weighted:
+                fund_by_stock[h["name"]] += h["weight_pct"]
+            for stock_name, w in fund_by_stock.items():
+                names.add(stock_name)
+                stock_data[stock_name]["funds"].append(fund)
+                stock_data[stock_name]["weights"].append(w)
 
-    for fund, holdings in prev_holdings.items():
-        weighted = _add_weights(holdings)
-        for h in weighted:
-            prev_names.add(h["name"])
-            prev_stock_data[h["name"]]["funds"].append(fund)
-            prev_stock_data[h["name"]]["value"] += h["value_usd"]
-            prev_stock_data[h["name"]]["weights"].append(h["weight_pct"])
+    _collect(curr_holdings, curr_names, curr_stock_data)
+    _collect(prev_holdings, prev_names, prev_stock_data)
 
     def _avg_w(data: dict) -> float:
         ws = data["weights"]
