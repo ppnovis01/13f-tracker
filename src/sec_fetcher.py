@@ -173,7 +173,8 @@ def _parse_holdings_xml(xml_text: str) -> list[dict]:
     """
     Parseia o XML de informationTable e retorna lista de posições.
     Cada item: {"name", "cusip", "value_usd", "shares"}
-    Nota: o campo 'value' nos XMLs 13F modernos está em dólares (não milhares).
+    Nota: o campo 'value' nos XMLs 13F está em milhares de dólares (padrão SEC).
+    Multiplicamos por 1000 para armazenar em dólares reais.
     """
     holdings = []
     try:
@@ -199,7 +200,7 @@ def _parse_holdings_xml(xml_text: str) -> list[dict]:
                 continue
 
             try:
-                value = int(value_str.replace(",", ""))
+                value = int(value_str.replace(",", "")) * 1000  # SEC reporta em milhares
                 shares = int(shares_str.replace(",", "")) if shares_str else 0
                 holdings.append({
                     "name": name.upper().strip(),
